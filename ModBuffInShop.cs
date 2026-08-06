@@ -395,7 +395,7 @@ public abstract class ModBuffInShop : ModFakeTower<Buffs>, IModSettings
     {
         if (Simulation.Current == null) return;
 
-        var discounts = Simulation.Current.GetTowerInventory(InGame.Bridge.MyPlayerNumber).towerDiscounts;
+        var discounts = Simulation.Current.GetTowerInventory(InGame.Bridge.GetInputId()).towerDiscounts;
         var towers = Simulation.Current.towerManager.GetTowers().ToArray();
 
         foreach (var buff in GetContent<ModBuffInShop>().Where(buff => buff.SubsequentDiscount))

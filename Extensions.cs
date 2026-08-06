@@ -38,7 +38,7 @@ public static class Extensions
             projSpeedSupport.GetBuffIndicatorModel());
 
     public static RangeSupport.MutatorTower CreateMutator(this RangeSupportModel rangeSupport) =>
-        new(rangeSupport.isUnique, rangeSupport.mutatorId, rangeSupport.additive,
+        new(rangeSupport.isUnique, rangeSupport.maxStacks, rangeSupport.mutatorId, rangeSupport.additive,
             rangeSupport.multiplier, rangeSupport.GetBuffIndicatorModel());
 
     public static AbilityCooldownScaleSupport.MutatorTower CreateMutator(
