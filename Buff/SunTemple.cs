@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BTD_Mod_Helper.Api.Helpers;
 using BTD_Mod_Helper.Extensions;
 using Il2CppAssets.Scripts.Models.Effects;
 using Il2CppAssets.Scripts.Models.Towers;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors;
-using Il2CppAssets.Scripts.Models.Towers.Mods;
 using Il2CppAssets.Scripts.Models.Towers.Mutators;
 using Il2CppAssets.Scripts.Models.TowerSets;
 using Il2CppAssets.Scripts.Simulation.Objects;
@@ -70,30 +68,11 @@ public class SunTemple : ModBuffInShop
         }
     }
 
-    public override bool ExtraMutation(TowerModel towerModel)
-    {
-        ExtraMutation(towerModel, OriginTowerModel);
-
-        return true;
-    }
-
-    public static bool ExtraMutation(TowerModel towerModel, TowerModel monkey)
-    {
-        var discount = monkey
-            .GetBehaviors<TempleTowerMutatorGroupModel>()
-            .Where(model => model.towerSet == TowerSet.Support)
-            .SelectMany(model => model.mutators.OfIl2CppType<AddBehaviorToTowerMutatorModel>())
-            .SelectMany(model => model.behaviors)
-            .OfIl2CppType<DiscountZoneModel>()
-            .Last();
-
-        towerModel.AddBehavior(DiscountZoneModModel.Create(new()
-        {
-            name = discount.stackName,
-            additionalMultiplier = discount.discountMultiplier,
-            specificScriptId = ModelSerializer.SerializeModel(discount)
-        }));
-
-        return true;
-    }
+    public static DiscountZoneModel GetDiscountZone(TowerModel monkey) => monkey
+        .GetBehaviors<TempleTowerMutatorGroupModel>()
+        .Where(model => model.towerSet == TowerSet.Support)
+        .SelectMany(model => model.mutators.OfIl2CppType<AddBehaviorToTowerMutatorModel>())
+        .SelectMany(model => model.behaviors)
+        .OfIl2CppType<DiscountZoneModel>()
+        .Last();
 }

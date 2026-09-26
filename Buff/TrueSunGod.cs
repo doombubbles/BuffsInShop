@@ -30,6 +30,4 @@ public class TrueSunGod : ModBuffInShop<SunTemple>
         .GetBehavior<CreateEffectOnPlaceModel>().effectModel;
 
     public override IEnumerable<BehaviorMutator> GetMutators(Tower? tower) => SunTemple.GetMutators(OriginTowerModel);
-
-    public override bool ExtraMutation(TowerModel towerModel) => SunTemple.ExtraMutation(towerModel, OriginTowerModel);
 }

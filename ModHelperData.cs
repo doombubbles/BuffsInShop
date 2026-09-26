@@ -2,8 +2,8 @@ namespace BuffsInShop;
 
 public static class ModHelperData
 {
-    public const string WorksOnVersion = "56.0";
-    public const string Version = "1.1.5";
+    public const string WorksOnVersion = "56.3";
+    public const string Version = "1.1.6";
     public const string Name = "Buffs in Shop";
 
     public const string Description =

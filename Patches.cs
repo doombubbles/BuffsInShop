@@ -1,15 +1,12 @@
 ﻿using System.Linq;
 using System.Reflection;
 using BTD_Mod_Helper.Api;
-using BTD_Mod_Helper.Api.Helpers;
 using BTD_Mod_Helper.Extensions;
 using BuffsInShop.Buff;
 using HarmonyLib;
-using Il2CppAssets.Scripts.Models;
 using Il2CppAssets.Scripts.Models.Profile;
 using Il2CppAssets.Scripts.Models.Towers;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors;
-using Il2CppAssets.Scripts.Models.Towers.Mods;
 using Il2CppAssets.Scripts.Simulation;
 using Il2CppAssets.Scripts.Simulation.Input;
 using Il2CppAssets.Scripts.Simulation.Towers;
@@ -52,17 +49,28 @@ internal static class TowerManager_GetFreeUpgrade
 }
 
 /// <summary>
-/// Personal discount zone
+/// Personal discount zone for Sun Temple / True Sun God buffed towers.
 /// </summary>
 [HarmonyPatch(typeof(TowerManager), nameof(TowerManager.GetZoneDiscount))]
 internal static class TowerManager_GetZoneDiscount
 {
     [HarmonyPostfix]
-    internal static void Postfix(TowerModel towerModel, Dictionary<string, List<DiscountZone>> __result)
+    internal static void Postfix(TowerManager __instance, TowerModel? towerModel,
+        Dictionary<string, List<DiscountZone>>? __result)
     {
-        foreach (var discount in towerModel.GetBehaviors<DiscountZoneModModel>())
+        if (towerModel == null || __result == null) return;
+
+        var sunTemple = ModContent.GetInstance<SunTemple>();
+        var trueSunGod = ModContent.GetInstance<TrueSunGod>();
+
+        var tower = __instance.GetTowers().ToList().FirstOrDefault(tower =>
+            tower.towerModel?.Pointer == towerModel.Pointer && (sunTemple.HasBuff(tower) || trueSunGod.HasBuff(tower)));
+
+        if (tower == null) return;
+
+        foreach (var buff in new ModBuffInShop[] {sunTemple, trueSunGod}.Where(buff => buff.HasBuff(tower)))
         {
-            var discountZoneModel = ModelSerializer.DeserializeModel<DiscountZoneModel>(discount.specificScriptId);
+            var discountZoneModel = SunTemple.GetDiscountZone(buff.OriginTowerModel);
 
             __result.TryAdd(discountZoneModel.stackName, new List<DiscountZone>());
 
